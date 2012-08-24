@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<body>
+<div id = "grid" style="font-weight: bold; font-family: courier new"></div>
+<script type="text/javascript" src="jquery-1.3.2.js"></script>
+<script type="text/javascript">
+
+var gameSize = 20;
+var currentGrid = initGrid(gameSize);
+var nextGrid = initGrid(gameSize);
+
+$(document).ready(function() {
+	document.getElementById("grid").innerHTML = generateHTMLGrid(gameSize);
+	setCell(10, 10);
+	setCell(11, 10);
+	setCell(12, 10);
+	setCell(9, 11);
+	setCell(10, 11);
+	setCell(11, 11);
+	copyGrid();
+	
+	setInterval("runGame()", 1000);
+});
+
+function runGame() {
+	for (var i = 0; i < gameSize; i++) {
+		for (var j = 0; j < gameSize; j++) {
+			var liveNeighbors = countLiveNeighbors(i, j);
+			if (isCellSet(i, j)) {
+				if ((liveNeighbors < 2) || (liveNeighbors > 3)) {
+					unsetCell(i, j);
+				}
+			} else {
+				if (liveNeighbors == 3) {
+					setCell(i, j);
+				}
+			}
+		}
+	}
+	copyGrid();
+}
+
+function countLiveNeighbors(x, y) {
+	return (
+		((isCellSet(x + 1, y))? 1 : 0) +
+		((isCellSet(x, y + 1))? 1 : 0) +
+		((isCellSet(x + 1, y + 1))? 1 : 0) +
+		((isCellSet(x - 1, y))? 1 : 0) +
+		((isCellSet(x, y - 1))? 1 : 0) +
+		((isCellSet(x - 1, y - 1))? 1 : 0) +
+		((isCellSet(x + 1, y - 1))? 1 : 0) +
+		((isCellSet(x - 1,	y + 1))? 1 : 0)
+	);
+}
+
+function isCellSet(x, y) {
+	return (
+		(x > 0) && (x < gameSize) &&
+		(y > 0) && (y < gameSize) &&
+		(currentGrid[x][y])
+	);
+}
+
+function setCell(x, y) {
+	nextGrid[x][y] = true;
+	document.getElementById("x" + x + "y" + y).innerHTML = "&nbspO";
+}
+
+function unsetCell(x, y) {
+	nextGrid[x][y] = false;
+	document.getElementById("x" + x + "y" + y).innerHTML = "&nbsp.";
+}
+
+function copyGrid() {
+	for (var i = 0; i < gameSize; i++) {
+		for (var j = 0; j < gameSize; j++) {
+			currentGrid[i][j] = nextGrid[i][j];
+		}
+	}
+}
+
+function generateHTMLGrid(size) {
+	ret = "";
+	for (var i = 0; i < size; i++) {
+		ret += "";
+		for (var j = 0; j < size; j++) {
+			ret += "<span id='" + "x" + j + "y" + i + "' style=width='100'>" + "&nbsp.</span>"; 
+		}
+		ret += "<br />";
+	}
+	return ret;
+}
+
+function initGrid(size) {
+	var g = [];
+	for (var i = 0; i < size; i++) {
+		g[i] = [];
+		for (var j = 0; j < size; j++) {
+			g[i][j] = false;
+		}
+	}
+	return g;
+}
+
+</script>
+</body>
+</html>
