@@ -11,6 +11,8 @@ var nextGrid = initGrid(gameSize);
 
 $(document).ready(function() {
 	document.getElementById("grid").innerHTML = generateHTMLGrid(gameSize);
+	
+	// Set up a simple "Toad" pattern
 	setCell(10, 10);
 	setCell(11, 10);
 	setCell(12, 10);
